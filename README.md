@@ -34,6 +34,7 @@ Update the Symfony kernel `app/AppKernel.php` by adding the bundle
 // in AppKernel::registerBundles()
 $bundles = array(
     // ...
+    new JMS\Payment\CoreBundle\JMSPaymentCoreBundle(),
     new Barbondev\Payment\PayPointHostedBundle\BarbondevPaymentPayPointHostedBundle(),
     // ...
 );
