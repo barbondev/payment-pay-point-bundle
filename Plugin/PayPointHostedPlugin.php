@@ -15,7 +15,7 @@ class PayPointHostedPlugin extends AbstractPlugin
     /**
      * {@inheritdoc}
      */
-    function processes($paymentSystemName)
+    public function processes($paymentSystemName)
     {
         return ('paypoint_hosted' == $paymentSystemName);
     }
