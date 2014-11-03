@@ -17,9 +17,12 @@
     },
     "require-dev": {
         "symfony/browser-kit": "~2.2",
-        "symfony/finder": "~2.2"
+        "phpunit/phpunit": "4.3.4"
     },
     "autoload": {
         "psr-4": { "Barbondev\\Payment\\PayPointHostedBundle\\": "" }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
