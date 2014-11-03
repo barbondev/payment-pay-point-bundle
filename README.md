@@ -1,6 +1,8 @@
 Barbon Payments
 ===============
 
+[![Build Status](https://travis-ci.org/barbondev/payment-pay-point-bundle.svg?branch=develop)](https://travis-ci.org/barbondev/payment-pay-point-bundle)
+
 PayPoint Hosted Gateway
 -----------------------
 
