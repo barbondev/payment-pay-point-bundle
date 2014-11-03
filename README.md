@@ -24,7 +24,7 @@ Update the composer vendors and autoloader
 $ php composer.phar update
 ```
 
-Update the Symfony kernel `app/AppKernel.php`, adding the bundle
+Update the Symfony kernel `app/AppKernel.php` by adding the bundle
 
 ```php
 <?php
