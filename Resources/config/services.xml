@@ -4,6 +4,15 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!-- ... -->
+    <parameters>
+        <parameter key="barbondev.payment.form.paypoint_hosted_type">Barbondev\Payment\PayPointHostedBundle\Form\PayPointHostedType</parameter>
+    </parameters>
+
+    <services>
+        <service id="barbondev.payment.form.paypoint_hosted_type" class="%barbondev.payment.form.paypoint_hosted_type.class%">
+            <tag name="payment.method_form_type" />
+            <tag name="form.type" alias="paypoint_hosted" />
+        </service>
+    </services>
 
 </container>
