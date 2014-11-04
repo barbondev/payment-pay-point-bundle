@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="barbondev.payment.form.paypoint_hosted_type">Barbondev\Payment\PayPointHostedBundle\Form\PayPointHostedType</parameter>
+        <parameter key="barbondev.payment.form.paypoint_hosted_type.class">Barbondev\Payment\PayPointHostedBundle\Form\PayPointHostedType</parameter>
     </parameters>
 
     <services>
