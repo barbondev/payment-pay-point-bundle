@@ -20,8 +20,15 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
 
-        // ...
+        $treeBuilder
+            ->root('barbon_payment_paypoint_hosted', 'array')
+                ->children()
+                    ->scalarNode('merchant')->isRequired()->cannotBeEmpty()->end()
+                    ->scalarNode('gateway_url')->isRequired()->cannotBeEmpty()->end()
+                ->end()
+            ->end()
+        ;
 
-        return $treeBuilder;
+        return $treeBuilder->buildTree();
     }
 }

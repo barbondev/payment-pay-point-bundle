@@ -39,3 +39,22 @@ $bundles = array(
     // ...
 );
 ```
+
+Configuration
+-------------
+
+In `app/config/config.yml` configure the following parameters:
+
+```yml
+barbon_payment_paypoint_hosted:
+    merchant: ABC123
+    gateway_url: https://test.secpay.com/java-bin/ValCard
+```
+
+In `app/config/config_prod.yml` the default parameters may be overridden with production variants:
+
+```yml
+barbon_payment_paypoint_hosted:
+    merchant: ABC123
+    gateway_url: https://www.secpay.com/java-bin/ValCard
+```
