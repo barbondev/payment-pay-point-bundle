@@ -16,6 +16,9 @@
         <service id="barbondev.payment.plugin.paypoint_hosted" class="%barbondev.payment.plugin.paypoint_hosted.class%">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="templating" />
+            <argument>%barbon.payment.paypoint_hosted.merchant%</argument>
+            <argument>%barbon.payment.paypoint_hosted.gateway_url%</argument>
+            <argument>%kernel.debug%</argument>
             <tag name="payment.plugin" />
         </service>
 

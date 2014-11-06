@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Payment Deposit</title>
+    </head>
+    <body>
+        <form action="{{ gatewayUrl }}" method="post">
+            <fieldset>
+                <legend>Process Payment Form</legend>
+                <input type="hidden" name="merchant" value="{{ merchant }}" />
+                <input type="hidden" name="trans_id" value="{{ transactionId }}" />
+                <input type="hidden" name="amount" value="{{ amount }}" />
+                <input type="hidden" name="callback" value="{{ callback }}" />
+                <input type="hidden" name="digest" value="{{ digest }}" />
+                <button type="submit">Process Payment</button>
+            </fieldset>
+        </form>
+    </body>
+</html>
