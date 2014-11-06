@@ -20,6 +20,7 @@
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="templating" />
             <argument type="service" id="barbondev.payment.paypoint_digestor" />
+            <argument type="service" id="router" />
             <argument>%barbon.payment.paypoint_hosted.merchant%</argument>
             <argument>%barbon.payment.paypoint_hosted.remote_password%</argument>
             <argument>%barbon.payment.paypoint_hosted.gateway_url%</argument>
