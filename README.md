@@ -40,6 +40,13 @@ $bundles = array(
 );
 ```
 
+Install the routing configuration in `app/config/routing.yml`
+
+```yml
+barbondev_payment_paypoint_hosted:
+    resource: "@BarbondevPaymentPayPointHostedBundle/Resources/config/routing.xml"
+```
+
 Configuration
 -------------
 
