@@ -40,7 +40,10 @@
             <tag name="form.type" alias="paypoint_hosted" />
         </service>
 
-        <service id="barbondev.payment.paypoint.callback_controller" class="%barbondev.payment.paypoint.callback_controller.class%" />
+        <service id="barbondev.payment.paypoint.callback_controller" class="%barbondev.payment.paypoint.callback_controller.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="logger" />
+        </service>
 
     </services>
 
