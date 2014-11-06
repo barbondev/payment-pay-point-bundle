@@ -173,6 +173,7 @@ class PayPointHostedPlugin extends AbstractPlugin
                                 'test_mpi_status' => $that->testMpiStatus,
                                 'usage_type' => $that->usageType,
                                 'dups' => $that->dups,
+                                'template' => $that->template,
                             ),
                         )
                     )
