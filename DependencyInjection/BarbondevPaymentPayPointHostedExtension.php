@@ -29,6 +29,7 @@ class BarbondevPaymentPayPointHostedExtension extends Extension
         $loader->load('services.xml');
 
         $container->setParameter('barbon.payment.paypoint_hosted.merchant', $config['merchant']);
+        $container->setParameter('barbon.payment.paypoint_hosted.remote_password', $config['remote_password']);
         $container->setParameter('barbon.payment.paypoint_hosted.gateway_url', $config['gateway_url']);
     }
 }

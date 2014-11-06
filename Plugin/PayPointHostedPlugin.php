@@ -35,6 +35,11 @@ class PayPointHostedPlugin extends AbstractPlugin
     /**
      * @var string
      */
+    private $remotePassword;
+
+    /**
+     * @var string
+     */
     private $gatewayUrl;
 
     /**
@@ -43,6 +48,7 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @param EventDispatcherInterface $eventDispatcher
      * @param EngineInterface $templating
      * @param string $merchant
+     * @param string $remotePassword
      * @param string $gatewayUrl
      * @param bool $isDebug
      */
@@ -50,6 +56,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         EventDispatcherInterface $eventDispatcher,
         EngineInterface $templating,
         $merchant,
+        $remotePassword,
         $gatewayUrl,
         $isDebug = false)
     {
@@ -57,6 +64,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         $this->templating = $templating;
         $this->eventDispatcher = $eventDispatcher;
         $this->merchant = $merchant;
+        $this->remotePassword = $remotePassword;
         $this->gatewayUrl = $gatewayUrl;
     }
 
