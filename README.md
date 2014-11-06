@@ -53,7 +53,7 @@ In `app/config/config.yml` configure the following parameters:
 ```yml
 barbon_payment_paypoint_hosted:
     merchant: ABC123
-    gateway_url: https://test.secpay.com/java-bin/ValCard
+    gateway_url: https://www.secpay.com/java-bin/ValCard
     remote_password: f00b4r
     test_status: 'true'
     repeat: 'true'
@@ -68,7 +68,7 @@ In `app/config/config_prod.yml` the default parameters may be overridden with pr
 ```yml
 barbon_payment_paypoint_hosted:
     merchant: ABC123
-    gateway_url: https://test.secpay.com/java-bin/ValCard
+    gateway_url: https://www.secpay.com/java-bin/ValCard
     remote_password: sup3rs3cr3tp455
     test_status: 'live'
     repeat: 'true'
