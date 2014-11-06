@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class PayPointHostedPlugin
@@ -33,6 +34,11 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @var DigestorInterface
      */
     private $digestor;
+
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
     /**
      * @var string
@@ -85,6 +91,7 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @param EventDispatcherInterface $eventDispatcher
      * @param EngineInterface $templating
      * @param DigestorInterface $digestor
+     * @param RouterInterface $router
      * @param string $merchant
      * @param string $remotePassword
      * @param string $gatewayUrl
@@ -100,6 +107,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         EventDispatcherInterface $eventDispatcher,
         EngineInterface $templating,
         DigestorInterface $digestor,
+        RouterInterface $router,
         $merchant,
         $remotePassword,
         $gatewayUrl,
@@ -124,6 +132,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         $this->usageType = $usageType;
         $this->dups = $dups;
         $this->template = $template;
+        $this->router = $router;
     }
 
     /**
@@ -145,18 +154,13 @@ class PayPointHostedPlugin extends AbstractPlugin
         $amount = number_format($payment->getTargetAmount(), 2, '.', '');
 
         $digest = $this->digestor->digest($transactionId, $amount, $this->remotePassword);
-        $data = $transaction->getExtendedData();
-
-        if ( ! $data->has('callback')) {
-            throw new PayPointCallbackNotProvidedException(
-                'Callback URL not provided - please add to "predefined_data" when setting up payment selection form');
-        }
+        $callbackUrl = $this->router->generate('barbondev_payment_paypoint_hosted_gateway_callback', array(), true);
 
         $that = $this;
 
         $this->eventDispatcher->addListener(
             KernelEvents::RESPONSE,
-            function (FilterResponseEvent $event) use ($that, $transactionId, $amount, $digest, $data) {
+            function (FilterResponseEvent $event) use ($that, $transactionId, $amount, $digest, $callbackUrl) {
                 $event->setResponse(
                     $that->templating->renderResponse(
                         '@BarbondevPaymentPayPointHosted/PayPointHostedPlugin/payment.html.twig',
@@ -164,7 +168,7 @@ class PayPointHostedPlugin extends AbstractPlugin
                             'merchant' => $that->merchant,
                             'transactionId' => $transactionId,
                             'amount' => $amount,
-                            'callback' => $data->get('callback'),
+                            'callback' => $callbackUrl,
                             'digest' => $digest,
                             'gatewayUrl' => $that->gatewayUrl,
                             'testStatus' => $that->testStatus,

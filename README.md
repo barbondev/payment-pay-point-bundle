@@ -29,8 +29,6 @@ $ php composer.phar update
 Update the Symfony kernel `app/AppKernel.php` by adding the bundle
 
 ```php
-<?php
-
 // in AppKernel::registerBundles()
 $bundles = array(
     // ...
