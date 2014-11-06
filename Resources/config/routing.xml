@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="barbondev_payment_paypoint_hosted_gateway_callback" path="/payment/paypoint-hosted/gateway-callback">
+    <route id="barbondev_payment_paypoint_hosted_gateway_callback" path="/paypoint-hosted/gateway-callback">
         <default key="_controller">barbondev.payment.paypoint.callback_controller:gatewayCallbackAction</default>
     </route>
 
