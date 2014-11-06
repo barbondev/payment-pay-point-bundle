@@ -23,6 +23,11 @@
             <argument>%barbon.payment.paypoint_hosted.merchant%</argument>
             <argument>%barbon.payment.paypoint_hosted.remote_password%</argument>
             <argument>%barbon.payment.paypoint_hosted.gateway_url%</argument>
+            <argument>%barbon.payment.paypoint_hosted.test_status%</argument>
+            <argument>%barbon.payment.paypoint_hosted.repeat%</argument>
+            <argument>%barbon.payment.paypoint_hosted.test_mpi_status%</argument>
+            <argument>%barbon.payment.paypoint_hosted.usage_type%</argument>
+            <argument>%barbon.payment.paypoint_hosted.dups%</argument>
             <argument>%kernel.debug%</argument>
             <tag name="payment.plugin" />
         </service>

@@ -28,8 +28,16 @@ class BarbondevPaymentPayPointHostedExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
+        // Mandatory
         $container->setParameter('barbon.payment.paypoint_hosted.merchant', $config['merchant']);
         $container->setParameter('barbon.payment.paypoint_hosted.remote_password', $config['remote_password']);
         $container->setParameter('barbon.payment.paypoint_hosted.gateway_url', $config['gateway_url']);
+        $container->setParameter('barbon.payment.paypoint_hosted.test_status', $config['test_status']);
+
+        // Optional
+        $container->setParameter('barbon.payment.paypoint_hosted.repeat', $config['repeat']);
+        $container->setParameter('barbon.payment.paypoint_hosted.test_mpi_status', $config['test_mpi_status']);
+        $container->setParameter('barbon.payment.paypoint_hosted.usage_type', $config['usage_type']);
+        $container->setParameter('barbon.payment.paypoint_hosted.dups', $config['dups']);
     }
 }

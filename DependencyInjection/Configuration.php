@@ -26,6 +26,11 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('merchant')->isRequired()->cannotBeEmpty()->end()
                     ->scalarNode('remote_password')->isRequired()->cannotBeEmpty()->end()
                     ->scalarNode('gateway_url')->isRequired()->cannotBeEmpty()->end()
+                    ->scalarNode('test_status')->isRequired()->cannotBeEmpty()->end()
+                    ->scalarNode('repeat')->defaultNull()->end()
+                    ->scalarNode('test_mpi_status')->defaultNull()->end()
+                    ->scalarNode('usage_type')->defaultNull()->end()
+                    ->scalarNode('dups')->defaultNull()->end()
                 ->end()
             ->end()
         ;

@@ -30,6 +30,11 @@ class PayPointHostedPlugin extends AbstractPlugin
     private $eventDispatcher;
 
     /**
+     * @var DigestorInterface
+     */
+    private $digestor;
+
+    /**
      * @var string
      */
     private $merchant;
@@ -45,9 +50,29 @@ class PayPointHostedPlugin extends AbstractPlugin
     private $gatewayUrl;
 
     /**
-     * @var DigestorInterface
+     * @var string
      */
-    private $digestor;
+    private $testStatus;
+
+    /**
+     * @var string
+     */
+    private $repeat;
+
+    /**
+     * @var string
+     */
+    private $testMpiStatus;
+
+    /**
+     * @var string
+     */
+    private $usageType;
+
+    /**
+     * @var string
+     */
+    private $dups;
 
     /**
      * Constructor
@@ -58,6 +83,11 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @param string $merchant
      * @param string $remotePassword
      * @param string $gatewayUrl
+     * @param string $testStatus
+     * @param string $repeat
+     * @param string $testMpiStatus
+     * @param string $usageType
+     * @param string $dups
      * @param bool $isDebug
      */
     public function __construct(
@@ -67,6 +97,11 @@ class PayPointHostedPlugin extends AbstractPlugin
         $merchant,
         $remotePassword,
         $gatewayUrl,
+        $testStatus,
+        $repeat,
+        $testMpiStatus,
+        $usageType,
+        $dups,
         $isDebug = false)
     {
         parent::__construct($isDebug);
@@ -76,6 +111,11 @@ class PayPointHostedPlugin extends AbstractPlugin
         $this->remotePassword = $remotePassword;
         $this->gatewayUrl = $gatewayUrl;
         $this->digestor = $digestor;
+        $this->testStatus = $testStatus;
+        $this->repeat = $repeat;
+        $this->testMpiStatus = $testMpiStatus;
+        $this->usageType = $usageType;
+        $this->dups = $dups;
     }
 
     /**
@@ -91,8 +131,10 @@ class PayPointHostedPlugin extends AbstractPlugin
      */
     public function approveAndDeposit(FinancialTransactionInterface $transaction, $retry)
     {
-        $transactionId = $transaction->getId();
-        $amount = $transaction->getRequestedAmount();
+        $payment = $transaction->getPayment();
+
+        $transactionId = $payment->getId(); // todo: this needs to be a generated trans id (uuid)
+        $amount = number_format($payment->getTargetAmount(), 2, '.', '');
 
         $digest = $this->digestor->digest($transactionId, $amount, $this->remotePassword);
         $data = $transaction->getExtendedData();
@@ -117,6 +159,13 @@ class PayPointHostedPlugin extends AbstractPlugin
                             'callback' => $data->get('callback'),
                             'digest' => $digest,
                             'gatewayUrl' => $that->gatewayUrl,
+                            'testStatus' => $that->testStatus,
+                            'optionalParams' => array(
+                                'repeat' => $that->repeat,
+                                'test_mpi_status' => $that->testMpiStatus,
+                                'usage_type' => $that->usageType,
+                                'dups' => $that->dups,
+                            ),
                         )
                     )
                 );

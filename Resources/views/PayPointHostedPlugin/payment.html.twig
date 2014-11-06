@@ -7,11 +7,20 @@
         <form action="{{ gatewayUrl }}" method="post">
             <fieldset>
                 <legend>Process Payment Form</legend>
+
                 <input type="hidden" name="merchant" value="{{ merchant }}" />
                 <input type="hidden" name="trans_id" value="{{ transactionId }}" />
                 <input type="hidden" name="amount" value="{{ amount }}" />
                 <input type="hidden" name="callback" value="{{ callback }}" />
                 <input type="hidden" name="digest" value="{{ digest }}" />
+                <input type="hidden" name="test_status" value="{{ testStatus }}" />
+
+                {% for param, value in optionalParams %}
+                    {% if value %}
+                        <input type="hidden" name="{{ param }}" value="{{ value }}" />
+                    {% endif %}
+                {% endfor %}
+
                 <button type="submit">Process Payment</button>
             </fieldset>
         </form>

@@ -15,7 +15,6 @@ class PayPointDigestor implements DigestorInterface
      */
     public function digest($transactionId, $amount, $remotePassword)
     {
-        // todo: does $amount need to be zero padded?
         return md5($transactionId . $amount . $remotePassword);
     }
 }
