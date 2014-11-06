@@ -2,6 +2,8 @@
 
 namespace Barbondev\Payment\PayPointHostedBundle\Plugin;
 
+use Barbondev\Payment\PayPointHostedBundle\Digestor\DigestorInterface;
+use Barbondev\Payment\PayPointHostedBundle\Exception\PayPointCallbackNotProvidedException;
 use JMS\Payment\CoreBundle\Model\FinancialTransactionInterface;
 use JMS\Payment\CoreBundle\Plugin\AbstractPlugin;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -43,10 +45,16 @@ class PayPointHostedPlugin extends AbstractPlugin
     private $gatewayUrl;
 
     /**
+     * @var DigestorInterface
+     */
+    private $digestor;
+
+    /**
      * Constructor
      *
      * @param EventDispatcherInterface $eventDispatcher
      * @param EngineInterface $templating
+     * @param DigestorInterface $digestor
      * @param string $merchant
      * @param string $remotePassword
      * @param string $gatewayUrl
@@ -55,6 +63,7 @@ class PayPointHostedPlugin extends AbstractPlugin
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         EngineInterface $templating,
+        DigestorInterface $digestor,
         $merchant,
         $remotePassword,
         $gatewayUrl,
@@ -66,6 +75,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         $this->merchant = $merchant;
         $this->remotePassword = $remotePassword;
         $this->gatewayUrl = $gatewayUrl;
+        $this->digestor = $digestor;
     }
 
     /**
@@ -81,20 +91,31 @@ class PayPointHostedPlugin extends AbstractPlugin
      */
     public function approveAndDeposit(FinancialTransactionInterface $transaction, $retry)
     {
+        $transactionId = $transaction->getId();
+        $amount = $transaction->getRequestedAmount();
+
+        $digest = $this->digestor->digest($transactionId, $amount, $this->remotePassword);
+        $data = $transaction->getExtendedData();
+
+        if ( ! $data->has('callback')) {
+            throw new PayPointCallbackNotProvidedException(
+                'Callback URL not provided - please add to "predefined_data" when setting up payment selection form');
+        }
+
         $that = $this;
 
         $this->eventDispatcher->addListener(
             KernelEvents::RESPONSE,
-            function (FilterResponseEvent $event) use ($that, $transaction) {
+            function (FilterResponseEvent $event) use ($that, $transactionId, $amount, $digest, $data) {
                 $event->setResponse(
                     $that->templating->renderResponse(
                         '@BarbondevPaymentPayPointHosted/PayPointHostedPlugin/payment.html.twig',
                         array(
                             'merchant' => $that->merchant,
-                            'transactionId' => $transaction->getId(),
-                            'amount' => $transaction->getRequestedAmount(),
-                            'callback' => 'callb', // todo: add this
-                            'digest' => 'diges', // todo: add this
+                            'transactionId' => $transactionId,
+                            'amount' => $amount,
+                            'callback' => $data->get('callback'),
+                            'digest' => $digest,
                             'gatewayUrl' => $that->gatewayUrl,
                         )
                     )

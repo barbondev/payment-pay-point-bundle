@@ -8,14 +8,18 @@
 
         <parameter key="barbondev.payment.plugin.paypoint_hosted.class">Barbondev\Payment\PayPointHostedBundle\Plugin\PayPointHostedPlugin</parameter>
         <parameter key="barbondev.payment.form.paypoint_hosted_type.class">Barbondev\Payment\PayPointHostedBundle\Form\PayPointHostedType</parameter>
+        <parameter key="barbondev.payment.digestor.class">Barbondev\Payment\PayPointHostedBundle\Digestor\PayPointDigestor</parameter>
 
     </parameters>
 
     <services>
 
+        <service id="barbondev.payment.digestor" class="%barbondev.payment.digestor.class%" />
+
         <service id="barbondev.payment.plugin.paypoint_hosted" class="%barbondev.payment.plugin.paypoint_hosted.class%">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="templating" />
+            <argument type="service" id="barbondev.payment.digestor" />
             <argument>%barbon.payment.paypoint_hosted.merchant%</argument>
             <argument>%barbon.payment.paypoint_hosted.remote_password%</argument>
             <argument>%barbon.payment.paypoint_hosted.gateway_url%</argument>
