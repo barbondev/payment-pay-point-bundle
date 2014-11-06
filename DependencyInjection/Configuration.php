@@ -31,6 +31,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('test_mpi_status')->defaultNull()->end()
                     ->scalarNode('usage_type')->defaultNull()->end()
                     ->scalarNode('dups')->defaultNull()->end()
+                    ->scalarNode('template')->defaultNull()->end()
                 ->end()
             ->end()
         ;

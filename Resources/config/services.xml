@@ -28,6 +28,7 @@
             <argument>%barbon.payment.paypoint_hosted.test_mpi_status%</argument>
             <argument>%barbon.payment.paypoint_hosted.usage_type%</argument>
             <argument>%barbon.payment.paypoint_hosted.dups%</argument>
+            <argument>%barbon.payment.paypoint_hosted.template%</argument>
             <argument>%kernel.debug%</argument>
             <tag name="payment.plugin" />
         </service>

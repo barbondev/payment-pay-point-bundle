@@ -75,6 +75,11 @@ class PayPointHostedPlugin extends AbstractPlugin
     private $dups;
 
     /**
+     * @var string
+     */
+    private $template;
+
+    /**
      * Constructor
      *
      * @param EventDispatcherInterface $eventDispatcher
@@ -88,6 +93,7 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @param string $testMpiStatus
      * @param string $usageType
      * @param string $dups
+     * @param string $template
      * @param bool $isDebug
      */
     public function __construct(
@@ -102,6 +108,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         $testMpiStatus,
         $usageType,
         $dups,
+        $template,
         $isDebug = false)
     {
         parent::__construct($isDebug);
@@ -116,6 +123,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         $this->testMpiStatus = $testMpiStatus;
         $this->usageType = $usageType;
         $this->dups = $dups;
+        $this->template = $template;
     }
 
     /**

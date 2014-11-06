@@ -39,5 +39,6 @@ class BarbondevPaymentPayPointHostedExtension extends Extension
         $container->setParameter('barbon.payment.paypoint_hosted.test_mpi_status', $config['test_mpi_status']);
         $container->setParameter('barbon.payment.paypoint_hosted.usage_type', $config['usage_type']);
         $container->setParameter('barbon.payment.paypoint_hosted.dups', $config['dups']);
+        $container->setParameter('barbon.payment.paypoint_hosted.template', $config['template']);
     }
 }
