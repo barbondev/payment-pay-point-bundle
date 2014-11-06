@@ -9,6 +9,7 @@
         <parameter key="barbondev.payment.plugin.paypoint_hosted.class">Barbondev\Payment\PayPointHostedBundle\Plugin\PayPointHostedPlugin</parameter>
         <parameter key="barbondev.payment.form.paypoint_hosted_type.class">Barbondev\Payment\PayPointHostedBundle\Form\PayPointHostedType</parameter>
         <parameter key="barbondev.payment.paypoint_digestor.class">Barbondev\Payment\PayPointHostedBundle\Digestor\PayPointDigestor</parameter>
+        <parameter key="barbondev.payment.paypoint.callback_controller.class">Barbondev\Payment\PayPointHostedBundle\Controller\CallbackController</parameter>
 
     </parameters>
 
@@ -38,6 +39,8 @@
             <tag name="payment.method_form_type" />
             <tag name="form.type" alias="paypoint_hosted" />
         </service>
+
+        <service id="barbondev.payment.paypoint.callback_controller" class="%barbondev.payment.paypoint.callback_controller.class%" />
 
     </services>
 

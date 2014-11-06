@@ -163,7 +163,7 @@ class PayPointHostedPlugin extends AbstractPlugin
             function (FilterResponseEvent $event) use ($that, $transactionId, $amount, $digest, $callbackUrl) {
                 $event->setResponse(
                     $that->templating->renderResponse(
-                        '@BarbondevPaymentPayPointHosted/PayPointHostedPlugin/payment.html.twig',
+                        '@BarbondevPaymentPayPointHosted/PayPointHostedPlugin/payment.html.twig', // todo: make this configurable (or overridable)
                         array(
                             'merchant' => $that->merchant,
                             'transactionId' => $transactionId,
