@@ -7,6 +7,7 @@ use Barbondev\Payment\PayPointHostedBundle\Exception\PayPointCallbackNotProvided
 use Barbondev\Payment\PayPointHostedBundle\Transaction\ReferenceGeneratorInterface;
 use Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface;
 use JMS\Payment\CoreBundle\Model\FinancialTransactionInterface;
+use JMS\Payment\CoreBundle\Model\PaymentInterface;
 use JMS\Payment\CoreBundle\Plugin\AbstractPlugin;
 use JMS\Payment\CoreBundle\Plugin\PluginInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -222,10 +223,12 @@ class PayPointHostedPlugin extends AbstractPlugin
                 $transaction->setProcessedAmount($data->get('amount'));
                 $transaction->setResponseCode(PluginInterface::RESPONSE_CODE_SUCCESS);
                 $transaction->setReasonCode(PluginInterface::REASON_CODE_SUCCESS);
+                $transaction->setState(PaymentInterface::STATE_DEPOSITED);
                 return;
         }
 
         $transaction->setResponseCode('unknown');
+        $transaction->setState(PaymentInterface::STATE_FAILED);
         $transaction->setReasonCode(PluginInterface::REASON_CODE_INVALID);
     }
 }
