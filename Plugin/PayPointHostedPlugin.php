@@ -218,6 +218,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         switch ($data->get('code')) {
 
             case PayPointResponseCodes::AUTHORISED:
+                $transaction->setReferenceNumber($data->get('trans_id'));
                 $transaction->setProcessedAmount($data->get('amount'));
                 $transaction->setResponseCode(PluginInterface::RESPONSE_CODE_SUCCESS);
                 $transaction->setReasonCode(PluginInterface::REASON_CODE_SUCCESS);
