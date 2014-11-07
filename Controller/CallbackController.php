@@ -2,6 +2,7 @@
 
 namespace Barbondev\Payment\PayPointHostedBundle\Controller;
 
+use JMS\Payment\CoreBundle\Model\PaymentInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -88,40 +89,52 @@ class CallbackController
             if ($this->logger) {
                 $this->logger->error('The trans_id could not be found in callback');
             }
-            // todo: throw exception
+            return new Response('FAIL', 500);
         }
 
         if ( ! $this->responseHashValidator->validate($request->getRequestUri(), $this->remotePassword, $request->get('hash'))) {
             if ($this->logger) {
                 $this->logger->error('Response hash did not match computed hash');
             }
-            // todo: throw exception
+            return new Response('FAIL', 500);
         }
+
+        $transaction = $this->em->getRepository('JMSPaymentCoreBundle:FinancialTransaction')->findOneBy(array(
+            'referenceNumber' => $params->get('trans_id'),
+        ));
+
+        if ( ! $transaction) {
+            if ($this->logger) {
+                $this->logger->error('Transaction could not be found for {transactionId}', array(
+                    'transactionId' => $params->get('trans_id'),
+                ));
+            }
+            return new Response('FAIL', 500);
+        }
+
+        $amount = $request->query->get('amount');
 
         // todo: fire an event to notify parent app
 
-        // ...
+        /** @var \JMS\Payment\CoreBundle\Entity\Payment $payment */
+        $payment = $transaction->getPayment();
 
-        /*
-        $this->request->query->all()
-        Array
-        (
-            [valid] => true
-            [trans_id] => 56
-            [code] => A
-            [auth_code] => 9999
-            [expiry] => 0915
-            [card_no] => 1111
-            [customer] => MR T TEST
-            [amount] => 24.28
-            [ip] => 195.59.185.214
-            [test_status] => true
-            [mpi_status_code] => 210
-            [mpi_message] => Other Result
-            [hash] => d422b47f7cfcc74eb837b212beb5ec0e
-        )
-        */
+        foreach ($request->query->all() as $param => $value) {
+            $transaction->getExtendedData()->set($param, $value);
+        }
 
-        return new Response('<pre>'.print_r($request->query->all(), true).'</pre>');
+        $payment->setState(PaymentInterface::STATE_DEPOSITING);
+        $payment->setDepositingAmount($amount);
+
+        $this->em->persist($transaction);
+        $this->em->persist($payment);
+        $this->em->flush();
+
+        $result = $this->paymentPluginController->deposit(
+            $transaction->getPayment()->getId(),
+            $transaction->getRequestedAmount()
+        );
+
+        return new Response('OK', 200);
     }
 }

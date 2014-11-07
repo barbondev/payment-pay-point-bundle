@@ -16,6 +16,6 @@ class ResponseHashValidator implements ResponseHashValidatorInterface
     public function validate($requestUri, $remotePassword, $hash)
     {
         $requestUri = preg_replace('/\&hash=[a-f0-9]{32}/', '&', $requestUri);
-        return (md5($requestUri . $remotePassword) == $hash);
+        return (md5($requestUri . $remotePassword) === $hash);
     }
 }

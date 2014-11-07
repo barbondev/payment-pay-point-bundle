@@ -199,6 +199,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         $transaction->setReferenceNumber($transactionReference);
         $transaction->setResponseCode(PluginInterface::RESPONSE_CODE_PENDING);
         $transaction->setReasonCode(PluginInterface::REASON_CODE_ACTION_REQUIRED);
+        $transaction->getPayment()->setApprovedAmount($amount);
     }
 
     /**
@@ -206,6 +207,24 @@ class PayPointHostedPlugin extends AbstractPlugin
      */
     public function deposit(FinancialTransactionInterface $transaction, $retry)
     {
+        $data = $transaction->getExtendedData();
 
+        if ('false' === $data->get('valid')) {
+            $transaction->setResponseCode('failed');
+            $transaction->setReasonCode(PluginInterface::REASON_CODE_INVALID);
+            return;
+        }
+
+        switch ($data->get('code')) {
+
+            case PayPointResponseCodes::AUTHORISED:
+                $transaction->setProcessedAmount($data->get('amount'));
+                $transaction->setResponseCode(PluginInterface::RESPONSE_CODE_SUCCESS);
+                $transaction->setReasonCode(PluginInterface::REASON_CODE_SUCCESS);
+                return;
+        }
+
+        $transaction->setResponseCode('unknown');
+        $transaction->setReasonCode(PluginInterface::REASON_CODE_INVALID);
     }
 }
