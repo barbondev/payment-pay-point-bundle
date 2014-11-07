@@ -4,8 +4,10 @@ namespace Barbondev\Payment\PayPointHostedBundle\Plugin;
 
 use Barbondev\Payment\PayPointHostedBundle\Digestor\DigestorInterface;
 use Barbondev\Payment\PayPointHostedBundle\Exception\PayPointCallbackNotProvidedException;
+use Barbondev\Payment\PayPointHostedBundle\Transaction\ReferenceGeneratorInterface;
 use JMS\Payment\CoreBundle\Model\FinancialTransactionInterface;
 use JMS\Payment\CoreBundle\Plugin\AbstractPlugin;
+use JMS\Payment\CoreBundle\Plugin\PluginInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -39,6 +41,11 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @var RouterInterface
      */
     private $router;
+
+    /**
+     * @var ReferenceGeneratorInterface
+     */
+    private $transactionReferenceGenerator;
 
     /**
      * @var string
@@ -92,6 +99,7 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @param EngineInterface $templating
      * @param DigestorInterface $digestor
      * @param RouterInterface $router
+     * @param ReferenceGeneratorInterface $transactionReferenceGenerator
      * @param string $merchant
      * @param string $remotePassword
      * @param string $gatewayUrl
@@ -108,6 +116,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         EngineInterface $templating,
         DigestorInterface $digestor,
         RouterInterface $router,
+        ReferenceGeneratorInterface $transactionReferenceGenerator,
         $merchant,
         $remotePassword,
         $gatewayUrl,
@@ -133,6 +142,7 @@ class PayPointHostedPlugin extends AbstractPlugin
         $this->dups = $dups;
         $this->template = $template;
         $this->router = $router;
+        $this->transactionReferenceGenerator = $transactionReferenceGenerator;
     }
 
     /**
@@ -146,27 +156,27 @@ class PayPointHostedPlugin extends AbstractPlugin
     /**
      * {@inheritdoc}
      */
-    public function approveAndDeposit(FinancialTransactionInterface $transaction, $retry)
+    public function approve(FinancialTransactionInterface $transaction, $retry)
     {
         $payment = $transaction->getPayment();
 
-        $transactionId = $payment->getId(); // todo: this needs to be a generated trans id (uuid)
+        $transactionReference = $this->transactionReferenceGenerator->generate();
         $amount = number_format($payment->getTargetAmount(), 2, '.', '');
 
-        $digest = $this->digestor->digest($transactionId, $amount, $this->remotePassword);
+        $digest = $this->digestor->digest($transactionReference, $amount, $this->remotePassword);
         $callbackUrl = $this->router->generate('barbondev_payment_paypoint_hosted_gateway_callback', array(), true);
 
         $that = $this;
 
         $this->eventDispatcher->addListener(
             KernelEvents::RESPONSE,
-            function (FilterResponseEvent $event) use ($that, $transactionId, $amount, $digest, $callbackUrl) {
+            function (FilterResponseEvent $event) use ($that, $transactionReference, $amount, $digest, $callbackUrl) {
                 $event->setResponse(
                     $that->templating->renderResponse(
                         '@BarbondevPaymentPayPointHosted/PayPointHostedPlugin/payment.html.twig', // todo: make this configurable (or overridable)
                         array(
                             'merchant' => $that->merchant,
-                            'transactionId' => $transactionId,
+                            'transactionId' => $transactionReference,
                             'amount' => $amount,
                             'callback' => $callbackUrl,
                             'digest' => $digest,
@@ -184,5 +194,17 @@ class PayPointHostedPlugin extends AbstractPlugin
                 );
             }
         );
+
+        $transaction->setReferenceNumber($transactionReference);
+        $transaction->setResponseCode(PluginInterface::RESPONSE_CODE_PENDING);
+        $transaction->setReasonCode(PluginInterface::REASON_CODE_ACTION_REQUIRED);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deposit(FinancialTransactionInterface $transaction, $retry)
+    {
+
     }
 }

@@ -10,12 +10,17 @@
         <parameter key="barbondev.payment.form.paypoint_hosted_type.class">Barbondev\Payment\PayPointHostedBundle\Form\PayPointHostedType</parameter>
         <parameter key="barbondev.payment.paypoint_digestor.class">Barbondev\Payment\PayPointHostedBundle\Digestor\PayPointDigestor</parameter>
         <parameter key="barbondev.payment.paypoint.callback_controller.class">Barbondev\Payment\PayPointHostedBundle\Controller\CallbackController</parameter>
+        <parameter key="barbondev.payment.paypoint.transaction.reference_generator.class">Barbondev\Payment\PayPointHostedBundle\Transaction\PseudoUuIdReferenceGenerator</parameter>
 
     </parameters>
 
     <services>
 
         <service id="barbondev.payment.paypoint_digestor" class="%barbondev.payment.paypoint_digestor.class%" />
+
+        <service id="barbondev.payment.paypoint.transaction.reference_generator" class="%barbondev.payment.paypoint.transaction.reference_generator.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
 
         <service id="barbondev.payment.plugin.paypoint_hosted" class="%barbondev.payment.plugin.paypoint_hosted.class%">
             <argument type="service" id="event_dispatcher" />

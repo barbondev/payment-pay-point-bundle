@@ -45,6 +45,8 @@ class CallbackController
             // todo: log and throw exception
         }
 
+        // todo: fire an event to notify parent app
+
         // ...
 
         /*
@@ -66,6 +68,7 @@ class CallbackController
             [hash] => d422b47f7cfcc74eb837b212beb5ec0e
         )
         */
+
         return new Response('<pre>'.print_r($request->query->all(), true).'</pre>');
     }
 }
