@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Persistence\ObjectManager;
 use Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface;
+use JMS\Payment\CoreBundle\PluginController\EntityPluginController;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -32,6 +33,11 @@ class CallbackController
     private $responseHashValidator;
 
     /**
+     * @var EntityPluginController
+     */
+    private $paymentPluginController;
+
+    /**
      * @var string
      */
     private $remotePassword;
@@ -41,13 +47,19 @@ class CallbackController
      *
      * @param ObjectManager $em
      * @param \Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface $responseHashValidator
-     * @param $remotePassword
+     * @param \JMS\Payment\CoreBundle\PluginController\EntityPluginController $paymentPluginController
+     * @param string $remotePassword
      */
-    public function __construct(ObjectManager $em, ResponseHashValidatorInterface $responseHashValidator, $remotePassword)
+    public function __construct(
+        ObjectManager $em,
+        ResponseHashValidatorInterface $responseHashValidator,
+        EntityPluginController $paymentPluginController,
+        $remotePassword)
     {
         $this->em = $em;
         $this->responseHashValidator = $responseHashValidator;
         $this->remotePassword = $remotePassword;
+        $this->paymentPluginController = $paymentPluginController;
     }
 
     /**
