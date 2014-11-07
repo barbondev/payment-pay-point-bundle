@@ -13,7 +13,7 @@
         <parameter key="barbondev.payment.paypoint.transaction.reference_generator.class">Barbondev\Payment\PayPointHostedBundle\Transaction\PseudoUuIdReferenceGenerator</parameter>
         <parameter key="barbondev.payment.paypoint.transaction.response_hash_validator.class">Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidator</parameter>
 
-    </parameters>event_dispatcher
+    </parameters>
 
     <services>
 
