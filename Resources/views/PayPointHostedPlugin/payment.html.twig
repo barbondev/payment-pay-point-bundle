@@ -4,7 +4,7 @@
         <title>Payment Deposit</title>
     </head>
     <body>
-        <form action="{{ gatewayUrl }}" method="post">
+        <form action="{{ gatewayUrl }}" method="post" id="post_payment_form">
             <fieldset>
                 <legend>Process Payment Form</legend>
 
@@ -24,5 +24,10 @@
                 <button type="submit">Process Payment</button>
             </fieldset>
         </form>
+        <script>
+            (function () {
+                document.getElementById('post_payment_form').submit();
+            }());
+        </script>
     </body>
 </html>
