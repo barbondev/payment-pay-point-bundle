@@ -5,6 +5,7 @@ namespace Barbondev\Payment\PayPointHostedBundle\Plugin;
 use Barbondev\Payment\PayPointHostedBundle\Digestor\DigestorInterface;
 use Barbondev\Payment\PayPointHostedBundle\Exception\PayPointCallbackNotProvidedException;
 use Barbondev\Payment\PayPointHostedBundle\Transaction\ReferenceGeneratorInterface;
+use Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface;
 use JMS\Payment\CoreBundle\Model\FinancialTransactionInterface;
 use JMS\Payment\CoreBundle\Plugin\AbstractPlugin;
 use JMS\Payment\CoreBundle\Plugin\PluginInterface;
@@ -110,6 +111,8 @@ class PayPointHostedPlugin extends AbstractPlugin
      * @param string $dups
      * @param string $template
      * @param bool $isDebug
+     *
+     * @todo: replace these params with a configuration object
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

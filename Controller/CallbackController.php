@@ -5,6 +5,7 @@ namespace Barbondev\Payment\PayPointHostedBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Persistence\ObjectManager;
+use Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -26,23 +27,63 @@ class CallbackController
     private $logger;
 
     /**
+     * @var ResponseHashValidatorInterface
+     */
+    private $responseHashValidator;
+
+    /**
+     * @var string
+     */
+    private $remotePassword;
+
+    /**
      * Constructor
      *
      * @param ObjectManager $em
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface $responseHashValidator
+     * @param $remotePassword
      */
-    public function __construct(ObjectManager $em, LoggerInterface $logger)
+    public function __construct(ObjectManager $em, ResponseHashValidatorInterface $responseHashValidator, $remotePassword)
     {
         $this->em = $em;
-        $this->logger = $logger;
+        $this->responseHashValidator = $responseHashValidator;
+        $this->remotePassword = $remotePassword;
     }
 
+    /**
+     * Set logger
+     *
+     * @param LoggerInterface $logger
+     * @return $this
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    /**
+     * PayPoint callback action
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function gatewayCallbackAction(Request $request)
     {
         $params = $request->query;
 
         if ( ! $params->has('trans_id')) {
-            // todo: log and throw exception
+            if ($this->logger) {
+                $this->logger->error('The trans_id could not be found in callback');
+            }
+            // todo: throw exception
+        }
+
+        if ( ! $this->responseHashValidator->validate($request->getRequestUri(), $this->remotePassword, $request->get('hash'))) {
+            if ($this->logger) {
+                $this->logger->error('Response hash did not match computed hash');
+            }
+            // todo: throw exception
         }
 
         // todo: fire an event to notify parent app
