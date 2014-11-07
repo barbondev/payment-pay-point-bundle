@@ -161,10 +161,8 @@ class PayPointHostedPlugin extends AbstractPlugin
      */
     public function approve(FinancialTransactionInterface $transaction, $retry)
     {
-        $payment = $transaction->getPayment();
-
         $transactionReference = $this->transactionReferenceGenerator->generate();
-        $amount = number_format($payment->getTargetAmount(), 2, '.', '');
+        $amount = number_format($transaction->getRequestedAmount(), 2, '.', '');
 
         $digest = $this->digestor->digest($transactionReference, $amount, $this->remotePassword);
         $callbackUrl = $this->router->generate('barbondev_payment_paypoint_hosted_gateway_callback', array(), true);
