@@ -2,12 +2,15 @@
 
 namespace Barbondev\Payment\PayPointHostedBundle\Controller;
 
+use Barbondev\Payment\PayPointHostedBundle\Event\Events;
+use Barbondev\Payment\PayPointHostedBundle\Event\GatewayCallbackEvent;
 use JMS\Payment\CoreBundle\Model\PaymentInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Persistence\ObjectManager;
 use Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface;
 use JMS\Payment\CoreBundle\PluginController\EntityPluginController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -39,6 +42,11 @@ class CallbackController
     private $paymentPluginController;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * @var string
      */
     private $remotePassword;
@@ -49,18 +57,21 @@ class CallbackController
      * @param ObjectManager $em
      * @param \Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidatorInterface $responseHashValidator
      * @param \JMS\Payment\CoreBundle\PluginController\EntityPluginController $paymentPluginController
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param string $remotePassword
      */
     public function __construct(
         ObjectManager $em,
         ResponseHashValidatorInterface $responseHashValidator,
         EntityPluginController $paymentPluginController,
+        EventDispatcherInterface $eventDispatcher,
         $remotePassword)
     {
         $this->em = $em;
         $this->responseHashValidator = $responseHashValidator;
         $this->remotePassword = $remotePassword;
         $this->paymentPluginController = $paymentPluginController;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -112,9 +123,11 @@ class CallbackController
             return new Response('FAIL', 500);
         }
 
-        $amount = $request->query->get('amount');
+        if ($this->eventDispatcher) {
+            $this->eventDispatcher->dispatch(Events::ON_GATEWAY_CALLBACK, new GatewayCallbackEvent($transaction, $params->all()));
+        }
 
-        // todo: fire an event to notify parent app
+        $amount = $request->query->get('amount');
 
         /** @var \JMS\Payment\CoreBundle\Entity\Payment $payment */
         $payment = $transaction->getPayment();
@@ -130,7 +143,7 @@ class CallbackController
         $this->em->persist($payment);
         $this->em->flush();
 
-        $result = $this->paymentPluginController->deposit(
+        $this->paymentPluginController->deposit(
             $transaction->getPayment()->getId(),
             $transaction->getRequestedAmount()
         );

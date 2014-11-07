@@ -13,7 +13,7 @@
         <parameter key="barbondev.payment.paypoint.transaction.reference_generator.class">Barbondev\Payment\PayPointHostedBundle\Transaction\PseudoUuIdReferenceGenerator</parameter>
         <parameter key="barbondev.payment.paypoint.transaction.response_hash_validator.class">Barbondev\Payment\PayPointHostedBundle\Transaction\ResponseHashValidator</parameter>
 
-    </parameters>
+    </parameters>event_dispatcher
 
     <services>
 
@@ -53,6 +53,7 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="barbondev.payment.paypoint.transaction.response_hash_validator" />
             <argument type="service" id="payment.plugin_controller" />
+            <argument type="service" id="event_dispatcher" />
             <argument>%barbon.payment.paypoint_hosted.remote_password%</argument>
             <call method="setLogger">
                 <argument type="service" id="logger" />
