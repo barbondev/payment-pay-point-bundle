@@ -123,10 +123,6 @@ class CallbackController
             return new Response('FAIL', 500);
         }
 
-        if ($this->eventDispatcher) {
-            $this->eventDispatcher->dispatch(Events::ON_GATEWAY_CALLBACK, new GatewayCallbackEvent($transaction, $params->all()));
-        }
-
         $amount = $request->query->get('amount');
 
         /** @var \JMS\Payment\CoreBundle\Entity\Payment $payment */
@@ -147,6 +143,10 @@ class CallbackController
             $transaction->getPayment()->getId(),
             $transaction->getRequestedAmount()
         );
+
+        if ($this->eventDispatcher) {
+            $this->eventDispatcher->dispatch(Events::ON_GATEWAY_CALLBACK, new GatewayCallbackEvent($transaction, $params->all()));
+        }
 
         return new Response('OK', 200);
     }
