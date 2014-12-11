@@ -174,22 +174,22 @@ class PayPointHostedPlugin extends AbstractPlugin
             KernelEvents::RESPONSE,
             function (FilterResponseEvent $event) use ($that, $transactionReference, $amount, $digest, $callbackUrl) {
                 $event->setResponse(
-                    $that->templating->renderResponse(
+                    $that->getTemplating()->renderResponse(
                         '@BarbondevPaymentPayPointHosted/PayPointHostedPlugin/payment.html.twig', // todo: make this configurable (or overridable)
                         array(
-                            'merchant' => $that->merchant,
+                            'merchant' => $that->getMerchant(),
                             'transactionId' => $transactionReference,
                             'amount' => $amount,
                             'callback' => $callbackUrl,
                             'digest' => $digest,
-                            'gatewayUrl' => $that->gatewayUrl,
-                            'testStatus' => $that->testStatus,
+                            'gatewayUrl' => $that->getGatewayUrl(),
+                            'testStatus' => $that->getTestStatus(),
                             'optionalParams' => array(
-                                'repeat' => $that->repeat,
-                                'test_mpi_status' => $that->testMpiStatus,
-                                'usage_type' => $that->usageType,
-                                'dups' => $that->dups,
-                                'template' => $that->template,
+                                'repeat' => $that->getRepeat(),
+                                'test_mpi_status' => $that->getTestMpiStatus(),
+                                'usage_type' => $that->getUsageType(),
+                                'dups' => $that->getDups(),
+                                'template' => $that->getTemplate(),
                             ),
                         )
                     )
@@ -230,5 +230,95 @@ class PayPointHostedPlugin extends AbstractPlugin
         $transaction->setResponseCode('unknown');
         $transaction->setState(PaymentInterface::STATE_FAILED);
         $transaction->setReasonCode(PluginInterface::REASON_CODE_INVALID);
+    }
+    
+    /**
+     * Get templating
+     * 
+     * @return EngineInterface
+     */
+    public function getTemplating()
+    {
+        return $this->templating;
+    }
+    
+    /**
+     * Get merchant
+     * 
+     * @return string
+     */
+    public function getMerchant()
+    {
+        return $this->merchant;
+    }
+    
+    /**
+     * Get gateway url
+     * 
+     * @return string
+     */
+    public function getGatewayUrl()
+    {
+        return $this->gatewayUrl;
+    }
+    
+    /**
+     * Get test status
+     * 
+     * @return string
+     */
+    public function getTestStatus()
+    {
+        return $this->testStatus;
+    }
+    
+    /**
+     * Get repeat
+     * 
+     * @return string
+     */
+    public function getRepeat()
+    {
+        return $this->repeat;
+    }
+    
+    /**
+     * Get test mpi status
+     * 
+     * @return string
+     */
+    public function getTestMpiStatus()
+    {
+        return $this->testMpiStatus;
+    }
+    
+    /**
+     * Get usage type
+     * 
+     * @return string
+     */
+    public function getUsageType()
+    {
+        return $this->usageType;
+    }
+    
+    /**
+     * Get dups
+     * 
+     * @return string
+     */
+    public function getDups()
+    {
+        return $this->dups;
+    }
+    
+    /**
+     * Get template
+     * 
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
     }
 }
